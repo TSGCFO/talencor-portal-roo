@@ -58,6 +58,27 @@ export function truncate(str: string, length: number): string {
   return str.slice(0, length) + '...';
 }
 
+// Input formatting utilities
+export function formatSIN(value: string): string {
+  const numbers = value.replace(/\D/g, '');
+  if (numbers.length <= 3) return numbers;
+  if (numbers.length <= 6) return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+  return `${numbers.slice(0, 3)}-${numbers.slice(3, 6)}-${numbers.slice(6, 9)}`;
+}
+
+export function formatPhone(value: string): string {
+  const numbers = value.replace(/\D/g, '');
+  if (numbers.length <= 3) return numbers;
+  if (numbers.length <= 6) return `(${numbers.slice(0, 3)}) ${numbers.slice(3)}`;
+  return `(${numbers.slice(0, 3)}) ${numbers.slice(3, 6)}-${numbers.slice(6, 10)}`;
+}
+
+export function formatPostalCode(value: string): string {
+  const clean = value.replace(/\s/g, '').toUpperCase();
+  if (clean.length <= 3) return clean;
+  return `${clean.slice(0, 3)} ${clean.slice(3, 6)}`;
+}
+
 // Array utilities
 export function unique<T>(array: T[]): T[] {
   return [...new Set(array)];
@@ -115,13 +136,14 @@ export function isValidPostalCode(postalCode: string): boolean {
 // Score calculation for aptitude test
 export function calculateAptitudeScore(answers: string[]): number {
   const correctAnswers = [
-    'A', 'B', 'C', 'A', 'B', 'C', 'A', 'B', 'C', 'A' // Example correct answers
+    'have', 'which', 'is', 'for', 'pairs', 
+    '90%', '3 days', '5 toner cartridges', '$212.55', '$13.80'
   ];
   
   let score = 0;
   answers.forEach((answer, index) => {
     if (answer === correctAnswers[index]) {
-      score += 10; // 10 points per correct answer
+      score += 1;
     }
   });
   
@@ -134,7 +156,7 @@ export function generateId(): string {
 }
 
 // Debounce function
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -146,7 +168,7 @@ export function debounce<T extends (...args: any[]) => any>(
 }
 
 // Throttle function
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
@@ -211,7 +233,7 @@ export function createApiResponse<T>(
 export function createApiError(
   message: string,
   status: number = 500,
-  details?: any
+  details?: unknown
 ) {
   return {
     success: false,
