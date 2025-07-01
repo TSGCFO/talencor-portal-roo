@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Recruiter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      String   @default("recruiter")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  tokens       ApplicationToken[]
+  applications Application[]
+
+  @@map("recruiters")
+}
+
+model ApplicationToken {
+  id              String    @id @default(cuid())
+  token           String    @unique
+  recruiterEmail  String
+  applicantEmail  String
+  expiresAt       DateTime
+  usedAt          DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  recruiter   Recruiter     @relation(fields: [recruiterEmail], references: [email])
+  application Application?
+
+  @@map("application_tokens")
+}
+
+model Application {
+  id              String   @id @default(cuid())
+  tokenId         String   @unique
+  recruiterEmail  String
+  
+  // Personal Information
+  fullName        String
+  dateOfBirth     DateTime
+  sinNumber       String
+  phoneNumber     String
+  email           String
+  address         String
+  city            String
+  province        String
+  postalCode      String
+  
+  // Emergency Contact
+  emergencyName    String
+  emergencyPhone   String
+  emergencyRelation String
+  
+  // Legal Status & Transportation
+  workEligibility  String // "citizen", "permanent_resident", "work_permit", "student_visa"
+  workPermitExpiry DateTime?
+  hasReliableTransport Boolean
+  hasDriversLicense    Boolean
+  licenseClass         String?
+  hasVehicle           Boolean
+  
+  // Work History & Physical Requirements
+  previousExperience String
+  availableShifts    Json // Array of shift preferences
+  physicalLimitations String?
+  safetyEquipment     Json // Array of safety equipment they have
+  
+  // Job Preferences
+  jobTypes           Json // Array of preferred job types
+  wageExpectation    String
+  startDate          DateTime
+  isStudent          Boolean
+  classSchedule      Json? // Student schedule if applicable
+  
+  // Aptitude Test
+  aptitudeAnswers    Json // Array of answers to 10 questions
+  aptitudeScore      Int  @default(0)
+  
+  // Agreement & Submission
+  agreesToTerms      Boolean @default(false)
+  digitalSignature   String
+  submittedAt        DateTime @default(now())
+  status             String   @default("pending") // "pending", "reviewing", "approved", "rejected"
+  recruiterNotes     String?
+  
+  // Metadata
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  token      ApplicationToken       @relation(fields: [tokenId], references: [id])
+  recruiter  Recruiter             @relation(fields: [recruiterEmail], references: [email])
+  documents  ApplicationDocument[]
+
+  @@map("applications")
+}
+
+model ApplicationDocument {
+  id            String   @id @default(cuid())
+  applicationId String
+  fileName      String
+  fileUrl       String
+  fileType      String
+  fileSize      Int
+  documentType  String   // "resume", "cover_letter", "id_document", "work_permit", "other"
+  uploadedAt    DateTime @default(now())
+
+  // Relations
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@map("application_documents")
+}
