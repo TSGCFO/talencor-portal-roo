@@ -1,13 +1,20 @@
 import { GET } from '@/app/api/validate-token/route'
 import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/db'
-import { isTokenExpired } from '@/lib/auth'
 
 // Mock dependencies
-jest.mock('@/lib/db')
+jest.mock('@/lib/db', () => ({
+  prisma: {
+    applicationToken: {
+      findUnique: jest.fn(),
+    },
+  },
+}))
 jest.mock('@/lib/auth', () => ({
   isTokenExpired: jest.fn(),
 }))
+
+import { prisma } from '@/lib/db'
+import { isTokenExpired } from '@/lib/auth'
 
 const mockedPrisma = prisma as jest.Mocked<typeof prisma>
 const mockedIsTokenExpired = isTokenExpired as jest.MockedFunction<typeof isTokenExpired>

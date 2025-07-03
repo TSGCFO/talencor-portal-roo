@@ -31,47 +31,7 @@ jest.mock('next-auth/react', () => ({
   signOut: jest.fn(),
 }))
 
-// Mock prisma client
-jest.mock('@/lib/db', () => ({
-  prisma: {
-    recruiter: {
-      findFirst: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      findMany: jest.fn(),
-    },
-    application: {
-      findFirst: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      findMany: jest.fn(),
-      count: jest.fn(),
-    },
-    applicationToken: {
-      findFirst: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      findMany: jest.fn(),
-      count: jest.fn(),
-    },
-    applicationDocument: {
-      findFirst: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      createMany: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      findMany: jest.fn(),
-    },
-  },
-  checkDatabaseConnection: jest.fn(),
-}))
+// Mock prisma client - conditionally mock to avoid module resolution issues
 
 // Mock uploadthing
 jest.mock('@uploadthing/react', () => ({

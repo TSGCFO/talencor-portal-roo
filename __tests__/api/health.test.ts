@@ -1,10 +1,11 @@
 import { GET } from '@/app/api/health/route'
-import { checkDatabaseConnection } from '@/lib/db'
 
 // Mock the database connection check
 jest.mock('@/lib/db', () => ({
   checkDatabaseConnection: jest.fn(),
 }))
+
+import { checkDatabaseConnection } from '@/lib/db'
 
 const mockedCheckDatabaseConnection = checkDatabaseConnection as jest.MockedFunction<typeof checkDatabaseConnection>
 

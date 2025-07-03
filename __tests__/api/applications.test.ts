@@ -1,18 +1,34 @@
 import { GET, POST } from '@/app/api/applications/route'
 import { NextRequest } from 'next/server'
-import { getServerSession } from 'next-auth/next'
-import { prisma } from '@/lib/db'
-import { calculateAptitudeScore } from '@/lib/utils'
-import { sendApplicationConfirmationEmail } from '@/lib/email'
 
 // Mock dependencies
 jest.mock('next-auth/next')
-jest.mock('@/lib/db')
+jest.mock('@/lib/db', () => ({
+  prisma: {
+    applicationToken: {
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
+    application: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      count: jest.fn(),
+    },
+    applicationDocument: {
+      createMany: jest.fn(),
+    },
+  },
+}))
 jest.mock('@/lib/utils', () => ({
   ...jest.requireActual('@/lib/utils'),
   calculateAptitudeScore: jest.fn(),
 }))
 jest.mock('@/lib/email')
+
+import { getServerSession } from 'next-auth/next'
+import { prisma } from '@/lib/db'
+import { calculateAptitudeScore } from '@/lib/utils'
+import { sendApplicationConfirmationEmail } from '@/lib/email'
 
 const mockedGetServerSession = getServerSession as jest.MockedFunction<typeof getServerSession>
 const mockedPrisma = prisma as jest.Mocked<typeof prisma>
