@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db";
 import { ApplicationSchema } from "@/lib/validations";
 import { createApiResponse, createApiError, calculateAptitudeScore } from "@/lib/utils";
 import { sendApplicationConfirmationEmail } from "@/lib/email";
+import { Prisma } from "@prisma/client";
+import { UploadedDocument } from "@/types";
 
 export async function POST(request: NextRequest) {
   try {
@@ -121,9 +123,9 @@ export async function POST(request: NextRequest) {
     });
 
     // Create document records if any
-    if (validData.documents && validData.documents.length > 0) {
+    if (applicationData.documents && applicationData.documents.length > 0) {
       await prisma.applicationDocument.createMany({
-        data: validData.documents.map(doc => ({
+        data: applicationData.documents.map((doc: UploadedDocument) => ({
           applicationId: application.id,
           fileName: doc.fileName,
           fileUrl: doc.fileUrl,
@@ -186,7 +188,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     // Build where clause
-    const where: any = {
+    const where: Prisma.ApplicationWhereInput = {
       recruiterEmail: session.user.email,
     };
 

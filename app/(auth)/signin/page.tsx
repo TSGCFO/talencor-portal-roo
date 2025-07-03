@@ -44,7 +44,7 @@ export default function SignInPage() {
           setError("Sign in failed. Please try again.");
         }
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);

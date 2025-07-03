@@ -2,18 +2,27 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Upload, FileText, AlertCircle } from "lucide-react";
 
+interface DocumentUploadData {
+  documents?: Array<{
+    id?: number;
+    fileName: string;
+    fileUrl: string;
+    fileType: string;
+    fileSize: number;
+    documentType: string;
+  }>;
+}
+
 interface DocumentUploadStepProps {
-  data: any;
-  onUpdate: (field: string, value: any) => void;
-  errors: Record<string, string>;
+  data: DocumentUploadData;
+  onUpdate: (field: string, value: unknown) => void;
   isLoading?: boolean;
 }
 
-export default function DocumentUploadStep({ data, onUpdate, errors, isLoading }: DocumentUploadStepProps) {
+export default function DocumentUploadStep({ data, onUpdate, isLoading }: DocumentUploadStepProps) {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const newDocs = files.map(file => ({
@@ -31,7 +40,7 @@ export default function DocumentUploadStep({ data, onUpdate, errors, isLoading }
 
   const removeDocument = (index: number) => {
     const currentDocs = data.documents || [];
-    const updatedDocs = currentDocs.filter((_: any, i: number) => i !== index);
+    const updatedDocs = currentDocs.filter((_, i: number) => i !== index);
     onUpdate('documents', updatedDocs);
   };
 
@@ -72,7 +81,7 @@ export default function DocumentUploadStep({ data, onUpdate, errors, isLoading }
       {data.documents && data.documents.length > 0 && (
         <div className="space-y-3">
           <h4 className="font-medium">Uploaded Documents:</h4>
-          {data.documents.map((doc: any, index: number) => (
+          {data.documents.map((doc, index: number) => (
             <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
               <div className="flex items-center space-x-3">
                 <FileText className="h-5 w-5 text-blue-600" />

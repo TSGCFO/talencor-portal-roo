@@ -86,7 +86,7 @@ export default function HomePage() {
               </h2>
               <p className="text-gray-600 mb-6">
                 Our secure, streamlined application process helps connect talented individuals 
-                with employment opportunities. Whether you're a recruiter managing applications 
+                with employment opportunities. Whether you&apos;re a recruiter managing applications 
                 or an applicant completing your profile, our platform ensures a smooth, 
                 secure experience.
               </p>

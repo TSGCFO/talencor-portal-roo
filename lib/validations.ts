@@ -79,16 +79,7 @@ export const LegalStatusSchema = z.object({
   }),
   workPermitExpiry: z
     .string()
-    .optional()
-    .refine((date, ctx) => {
-      if (ctx.parent.workEligibility === "work_permit" && !date) {
-        return false;
-      }
-      if (date && ctx.parent.workEligibility === "work_permit") {
-        return new Date(date) > new Date();
-      }
-      return true;
-    }, "Work permit expiry date is required and must be in the future"),
+    .optional(),
   hasReliableTransport: z.boolean(),
   hasDriversLicense: z.boolean(),
   licenseClass: z.string().optional(),

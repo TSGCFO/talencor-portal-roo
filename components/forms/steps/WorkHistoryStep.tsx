@@ -1,13 +1,17 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+interface WorkHistoryData {
+  previousExperience?: string;
+  physicalLimitations?: string;
+  availableShifts?: string[];
+}
 
 interface WorkHistoryStepProps {
-  data: any;
-  onUpdate: (field: string, value: any) => void;
+  data: WorkHistoryData;
+  onUpdate: (field: string, value: unknown) => void;
   errors: Record<string, string>;
   isLoading?: boolean;
 }
